@@ -30,7 +30,7 @@ my $status_file = $ENV{HOME} . '/.pocoirc-youtube-status';
 my $startup_timestamp = time;
 
 sub periodic_check {
-    my ($irc, $usernames) = @_;
+    my ($self, $irc, $usernames) = @_;
 
     my $last_seen_by_username = ( do $status_file ) // {};
 

@@ -72,7 +72,7 @@ sub S_botcmd_check {
     my $channel = shift;
     my $message = shift;
 
-    POE::Component::IRC::Plugin::Youtube::Tools::periodic_check( $irc, $self->{channels} );
+    POE::Component::IRC::Plugin::Youtube::Tools::periodic_check( $self, $irc, $self->{channels} );
 
     return PCI_EAT_NONE;
 }
@@ -86,7 +86,7 @@ sub S_ping {
     if ($secs_past >= $self->{minutes_between_checks} * 60){
         warn "re-checking youtube feeds\n" if $self->{debug};
 
-        POE::Component::IRC::Plugin::Youtube::Tools::periodic_check( $irc, $self->{channels} );
+        POE::Component::IRC::Plugin::Youtube::Tools::periodic_check( $self, $irc, $self->{channels} );
 
         $self->{last_check_time} = time;
     }
