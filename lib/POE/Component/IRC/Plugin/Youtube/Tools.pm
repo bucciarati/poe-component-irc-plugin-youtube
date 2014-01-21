@@ -54,9 +54,11 @@ sub periodic_check {
             $item->{timestamp} = $ts_emitter->format_datetime(
                 $dt_parser->parse_datetime( $item->{pubDate} )
             );
-            warn "timestamp:<$item->{timestamp}> title:<$item->{title}> link:<$item->{link}>\n" if $self->{debug};
+            warn "timestamp:<$item->{timestamp}> username:<$username> title:<$item->{title}> link:<$item->{link}>\n" if $self->{debug};
 
             if ( $last_seen_by_username->{$username} < $item->{timestamp} ) {
+                warn " ^- $last_seen_by_username->{$username} < $item->{timestamp}\n" if $self->{debug};
+
                 $last_seen_by_username->{$username} = $item->{timestamp};
 
                 for my $chan_name ( keys $irc->{STATE}{Chans} ) {
@@ -65,10 +67,12 @@ sub periodic_check {
                         $item->{link} . ' ' . $item->{title},
                     );
                 }
+            } else {
+                warn " ^- $last_seen_by_username->{$username} >= $item->{timestamp}\n" if $self->{debug};
             }
         }
 
-        warn Dumper( $rss->{items}[0] ) if $self->{debug};
+        # warn Dumper( $rss->{items}[0] ) if $self->{debug};
     }
 
     open my $fh, '>', $status_file;

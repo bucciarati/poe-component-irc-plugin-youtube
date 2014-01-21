@@ -83,6 +83,8 @@ sub S_ping {
     $self->{last_check_time} //= time;
     my $secs_past = time - $self->{last_check_time};
 
+    warn " -- last_check_time:$self->{last_check_time} secs_past:$secs_past\n" if $self->{debug};
+
     if ($secs_past >= $self->{minutes_between_checks} * 60){
         warn "re-checking youtube feeds\n" if $self->{debug};
 
