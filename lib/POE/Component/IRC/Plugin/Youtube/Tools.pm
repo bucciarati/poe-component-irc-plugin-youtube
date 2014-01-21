@@ -26,11 +26,11 @@ my $ts_emitter = DateTime::Format::Strptime->new(
     pattern => '%s',
 );
 
-my $status_file = $ENV{HOME} . '/.pocoirc-youtube-status';
 my $startup_timestamp = time;
 
 sub periodic_check {
     my ($self, $irc, $usernames) = @_;
+    my $status_file = $self->{status_file} // $ENV{HOME} . '/.pocoirc-youtube-status';
 
     my $last_seen_by_username = ( do $status_file ) // {};
 
