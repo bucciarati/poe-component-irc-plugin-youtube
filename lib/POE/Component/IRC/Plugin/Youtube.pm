@@ -29,6 +29,7 @@ sub PCI_register {
 
     $irc->plugin_register($self, 'SERVER', 'ping');
     $irc->plugin_register($self, 'SERVER', 'botcmd_channels');
+    $irc->plugin_register($self, 'SERVER', 'botcmd_addchannel');
     $irc->plugin_register($self, 'SERVER', 'botcmd_check');
 
     my $botcmd;
@@ -41,6 +42,7 @@ sub PCI_register {
     die __PACKAGE__ . " depends on BotCommand plugin\n" unless defined $botcmd;
 
     $botcmd->add(channels => 'usage: channels');
+    $botcmd->add(addchannel => 'usage: addchannel <the channel\'s youtube username>');
     $botcmd->add(check    => 'usage: check');
 
     return 1;
@@ -57,6 +59,31 @@ sub S_botcmd_channels {
     my $channel = shift;
     my $message = shift;
 
+    $irc->yield(
+        notice => $$channel,
+        "Following: [@{[ join ', ', @{ $self->{channels} } ]}]",
+    );
+
+    return PCI_EAT_NONE;
+}
+
+sub S_botcmd_addchannel {
+    my ($self, $irc) = (shift, shift);
+
+    my $nick = shift;
+    my $channel = shift;
+    my $message = shift;
+
+    my $text = $$message;
+
+    my @new_channel_list = split /[\s,]+/, $text;
+
+    push @{ $self->{channels} }, @new_channel_list;
+
+    $irc->yield(
+        notice => $$channel,
+        "Added: @{[ join ', ', @new_channel_list ]}",
+    );
     $irc->yield(
         notice => $$channel,
         "Following: [@{[ join ', ', @{ $self->{channels} } ]}]",
